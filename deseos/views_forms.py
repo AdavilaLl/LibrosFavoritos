@@ -4,16 +4,10 @@ from django import forms
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.contrib import messages
-from .models import User, Book
+from .models import User, Wish
 import re
 import bcrypt
 from datetime import date
-
-CIERTA_EDAD = 18
-
-def calculate_age(born):
-    today = date.today()
-    return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
 class UserForm(forms.ModelForm):
     confirmar_password = forms.CharField(label='Confirmar Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
@@ -58,24 +52,6 @@ class UserForm(forms.ModelForm):
                 )
         return password
 
-    def clean_birthday(self):
-        birthday = self.cleaned_data['birthday']
-        if birthday is not None:
-            edad = calculate_age(birthday)
-        else:
-            edad=0
-
-        if birthday > date.today():
-            raise forms.ValidationError(
-                    f"solo fechas en pasado."
-                )
-
-        if edad < CIERTA_EDAD:
-            raise forms.ValidationError(
-                    f"La edad es menor a {CIERTA_EDAD}, porque tiene {edad} años."
-                )
-        return birthday
-
 
     def clean(self):
         cleaned_data = super().clean()
@@ -86,32 +62,13 @@ class UserForm(forms.ModelForm):
                     "Las contraseñas no coinciden"
                     )
 
-    def clean_birthday(self):
-        birthday = self.cleaned_data['birthday']
-        try:
-            edad = calculate_age(birthday)
-        except:
-            edad=0 
-
-        if birthday > date.today():
-            raise forms.ValidationError(
-                    f"solo fechas en pasado."
-                )
-
-        if edad < CIERTA_EDAD:
-            raise forms.ValidationError(
-                    f"La edad es menor a {CIERTA_EDAD}, porque tiene {edad} años."
-                )
-        return birthday
-
     class Meta:
         model = User
-        fields = ['first_name', 'last_name','birthday', 'email', 'password']
+        fields = ['first_name', 'last_name', 'email', 'password']
 
         labels = {
             'first_name':'Nombre:',
             'last_name':'Apellido',
-            'birthday': 'Fecha de nacimiento',
             'email': 'Email',
             'password': 'Password',
         }
@@ -119,7 +76,6 @@ class UserForm(forms.ModelForm):
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'birthday': forms.DateInput(attrs={'class': 'form-control', 'type':'date', 'max':date.today().strftime('%Y-%m-%d')}),
             'email':forms.TextInput(attrs={'class': 'form-control'}),
             'password': forms.PasswordInput(attrs={'class': 'form-control'})
         }
@@ -135,37 +91,49 @@ class LoginForm(forms.Form):
 
 
 
-class BookForm(forms.ModelForm):
+class WishForm(forms.ModelForm):
 
-    def clean_title(self):
-        title = self.cleaned_data['title']
+    def clean_item(self):
+        title = self.cleaned_data['item']
         length = len(title)
 
-        if length <= 4:
+        if length <= 3:
             print(length)
             raise forms.ValidationError(
-                    f'El titulo debe tener por lo menos 4 caracteres',
+                    f'El deseo debe tener por lo menos 3 caracteres',
                 )
 
         if length == 0:
             print(length)
             raise forms.ValidationError(
-                    f'Titulo requerido',
+                    f'Deseo requerido',
                 )
 
         return title
 
+    def clean_description(self):
+        description = self.cleaned_data['description']
+        length = len(description)
+
+        if length == 0:
+            print(length)
+            raise forms.ValidationError(
+                    f'Descripcion requerida',
+                )
+
+        return description
+
     class Meta:
-        model = Book
-        fields = ['title', 'description']
+        model = Wish
+        fields = ['item', 'description']
 
         labels = {
-            'title':'Titulo:',
-            'description':'Descripcion',
+            'item':'Item:',
+            'description':'Descripcion'
         }
 
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'item': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
         }
 
@@ -174,9 +142,9 @@ def main(request):
     if request.method == 'GET':
         if 'usuario' in request.session:
             messages.info(request,'Estas logueado')
-            return redirect(reverse('books:mybooks'))
+            return redirect(reverse('wishes:mywishes'))
         else:
-            return render(request, 'app/main.html' , {'formRegister'  : UserForm(),'formLogin'  : LoginForm(),})
+            return render(request, 'deseos/main.html' , {'formRegister'  : UserForm(),'formLogin'  : LoginForm(),})
     
     if request.method == "POST":
         print(request.POST)
@@ -189,10 +157,10 @@ def main(request):
             print(usuario.password)
             usuario.save()
             messages.success(request,'Usuario creado correctamente')
-            return redirect(reverse('books:main'))
+            return redirect(reverse('wishes:main'))
         else:
             #messages.error(request,'Con errores, validar nuevamente')
-            return render(request, 'app/main.html', {'formRegister':form, 'formLogin'  : LoginForm()})
+            return render(request, 'deseos/main.html', {'formRegister':form, 'formLogin'  : LoginForm()})
 
 def login(request):
 
@@ -207,16 +175,16 @@ def login(request):
                 if bcrypt.checkpw(form_password.encode(), user.password.encode()):
                     request.session['usuario'] = {'nombre':user.first_name , 'apellido':user.last_name, 'email':user.email, 'id':user.id}
                     print(request.session['usuario'])
-                    return redirect(reverse('books:mybooks'))
+                    return redirect(reverse('wishes:mywishes'))
                 else:
                     messages.error(request,'Contraseña o Email invalido')
-                    return redirect(reverse('books:main'))
+                    return redirect(reverse('wishes:main'))
             else:
                 messages.error(request,'Contraseña o Email invalido')
-                return redirect(reverse('books:main'))
+                return redirect(reverse('wishes:main'))
         else:
             #messages.error(request,'Con errores, validar nuevamente')
-            return render(request, 'app/main.html', {'formRegister':UserForm(), 'formLogin'  : form()})
+            return render(request, 'deseos/main.html', {'formRegister':UserForm(), 'formLogin'  : form()})
 
 def logout(request):
     if 'usuario' in request.session:
@@ -224,100 +192,130 @@ def logout(request):
     return redirect('/')
 
 
-def mybooks(request):
-
+def mywishes(request):
+    count = 0
     if request.method == "GET":
-        books = Book.objects.all()
-        authorBooks = User.objects.get(id=request.session['usuario']['id']).books_uploaded.all()
+        wishes = Wish.objects.all()
+        authorwishes = User.objects.get(id=request.session['usuario']['id']).wishes_uploaded.all()
         # Todo los libros que no son del autor
-        # otherBooks = Book.objects.all().exclude(uploaded_by = User.objects.get(id=request.session['usuario']['id']))
-        otherBooks = Book.objects.all().exclude(users_who_like = User.objects.get(id=request.session['usuario']['id']))
-        favouritesBooks = User.objects.get(id=request.session['usuario']['id']).liked_books.all()
-        print(favouritesBooks)
-        return render(request, 'app/firstPage.html', {
-            'books'  : books, 
-            'bookForm': BookForm(),
-            'authorBooks': authorBooks,
-            'otherBooks': otherBooks,
-            'favouritesBooks':favouritesBooks
-        }) 
+        otherwishes = Wish.objects.all().exclude(wished_by = User.objects.get(id=request.session['usuario']['id']))
+
+        #grantedWishes = Wish.users_who_granted.all()
+        #print(grantedWishes)
+        granted_wishes = User.objects.get(id=request.session['usuario']['id']).granted_wishes.all()
+        user = User.objects.get(id=request.session['usuario']['id'])
+
+        allWishes = Wish.objects.all()
+        for a in allWishes:
+            print(a)
+            print(a.users_who_liked.count())
+
+
+
+        return render(request, 'deseos/firstPage.html', {
+            'wishes'  : wishes, 
+            'wishForm': WishForm(),
+            'authorwishes': authorwishes,
+            'otherwishes':otherwishes,
+            'granted_wishes':granted_wishes,
+            'allWishes':allWishes,
+        })
+
 
     if request.method == "POST":
         print(request.POST)
 
-        form = BookForm(request.POST)
-        if form.is_valid():
-            book=form.save(commit=False)
-            user = User.objects.get(id = request.session['usuario']['id'])
-            book.uploaded_by = user
-            book.save()
-            book.users_who_like.add(user)
-        
-            messages.success(request, 'Libro creado correctamente')
-            return redirect(reverse('books:mybooks'))
-        else:
-            messages.error(request, 'Con errores, solucionar.')
-            return render(request, 'app/firstPage.html', {'formModel'  : form})    
 
+def addWish(request):
 
-def bookDetail(request,id):
-
-    book = Book.objects.get(id = id)
-    if request.session['usuario']['id'] == book.uploaded_by.id:
-        print('id sesion:'+str(request.session['usuario']['id'])+' uploadedId:'+str(book.uploaded_by.id))
         if request.method == "GET":
-            form = BookForm(instance=book)
-            peopleWhoLikeBook = book.users_who_like.all()
-            
-            return render(request, 'app/showDetailMine.html', {'book': book, 'bookForm':form, 'peopleWhoLikeBook':peopleWhoLikeBook })
-        
-        if request.method == "POST":
-            print(request.POST)
-            show = Book.objects.get(id=id)
-            form = BookForm(request.POST,instance=show)
+            context = {
+                'wishForm':WishForm()
+            }
+            return render(request, 'deseos/makeWish.html', context)
 
+        if request.method == "POST":
+            form = WishForm(request.POST)
             if form.is_valid():
-                form.save()
-                messages.success(request, 'Libro editado correctamente')
-                return redirect('books:bookDetail', id = id)
+                wish=form.save(commit=False)
+                user = User.objects.get(id = request.session['usuario']['id'])
+                wish.wished_by = user
+                wish.save()
+                messages.success(request, 'Deseo creado correctamente')
+                return redirect(reverse('wishes:mywishes'))
             else:
                 messages.error(request, 'Con errores, solucionar.')
-                return render(request, 'app/editShow.html', {'formModel'  : form})    
-        
-    else:
-
-        print('id sesion:'+str(request.session['usuario']['id'])+' uploadedId:'+str(book.uploaded_by.id))
-        if request.method == "GET":
-            peopleWhoLikeBook = book.users_who_like.all()
-            return render(request, 'app/showDetail.html', {'book': book, 'peopleWhoLikeBook': peopleWhoLikeBook})
-
+                return render(request, 'deseos/makeWish.html', {'formModel'  : form})   
 
 def delete(request,id):
     if request.method == 'POST':
-        bookD = Book.objects.get(id=id)
-        print(bookD.title)
-        bookD.delete()
+        wishD = Wish.objects.get(id=id)
+        print(wishD.item)
+        wishD.delete()
         messages.success(request,"Eliminado correctamente")
-        return redirect(reverse('books:mybooks'))
+        return redirect(reverse('wishes:mywishes'))
 
 
-def relationBookToUser(request,id):
+def relationWishToUser(request,id):
     if request.method == 'POST':
         user = User.objects.get(id = request.session['usuario']['id'])
-        book = Book.objects.get(id=id)
-        book.users_who_like.add(user)
-        messages.success(request,"Libro añadido a favoritos correctamente")
-        return redirect(reverse('books:mybooks'))
+        wish = Wish.objects.get(id=id)
+        wish.users_who_granted.add(user)
+        messages.success(request,"Deseo concedido!")
+        return redirect(reverse('wishes:mywishes'))
 
 def unFavourite(request,id):
     if request.method == 'POST':
         user = User.objects.get(id = request.session['usuario']['id'])
-        book = Book.objects.get(id=id)
-        book.users_who_like.remove(user)
+        wish = wish.objects.get(id=id)
+        wish.users_who_granted.remove(user)
         messages.warning(request,"Se quito el libro de favoritos")
-        return redirect(reverse('books:mybooks'))
+        return redirect(reverse('wishes:mywishes'))
+
+def editWish(request,id):
+    wish = Wish.objects.get(id=id)
+    if request.method == 'GET':
+        form = WishForm(instance=wish)
+        context = {
+            'wishForm':form
+        }
+        return render(request, 'deseos/editWish.html', context)
+
+    if request.method == "POST":
+        print(request.POST)
+        show = Wish.objects.get(id=id)
+        form = WishForm(request.POST,instance=show)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Deseo editado correctamente')
+            return redirect('wishes:mywishes')
+        else:
+            messages.error(request, 'Con errores, solucionar.')
+            return render(request, 'deseo/editWish.html', {'formModel'  : form}) 
 
 def stats(request):
+    count = 0
     if request.method == "GET":
         users = User.objects.get(id=request.session['usuario']['id'])
-        return render(request, 'app/showDetailMine.html', {'users': users})
+        allGrantedWishes = User.objects.all()
+        for a in allGrantedWishes:
+            print(a)
+            count += a.granted_wishes.count()
+        
+        allUserWishesGranted = users.granted_wishes.all().count()
+        wishUserCount = User.objects.get(id=request.session['usuario']['id']).wishes_uploaded.all().count()
+        pendingWishes = wishUserCount-allUserWishesGranted 
+        print(allGrantedWishes)
+        print(count)
+        print(allUserWishesGranted)
+        print(wishUserCount)
+        return render(request, 'deseos/stats.html', {'users': users, 'pendingWishes': pendingWishes, 'totalGrantedWishes':count})
+
+
+def likeWish(request, id):
+    if request.method=='POST':
+        user = User.objects.get(id=request.session['usuario']['id'])
+        wish = Wish.objects.get(id=id)
+        wish.users_who_liked.add(user)
+        messages.success(request,f"Te gusta el deseo:{wish.item} de {user.first_name} {user.last_name}!")
+        return redirect(reverse('wishes:mywishes'))

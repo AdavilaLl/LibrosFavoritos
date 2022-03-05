@@ -1,0 +1,55 @@
+{% extends "app/index.html" %}
+{% block title%}makeWish{%endblock%}
+{% block content%}
+<div class="d-flex justify-content-between bg-dark text-light ">
+
+    <h1 class="m-4 "><span class="fa fa-user-circle"></span> Hello {{request.session.usuario.nombre}}
+        {{request.session.usuario.apellido}}! Make a Wish!!</h1>
+    <h1 class="m-4 "><a href="{% url 'wishes:logout' %}">Salir</a></h1>
+</div>
+
+<div class="w-75 d-flex justify-content-start p-5">
+    <form action="" method="post">
+
+        {% csrf_token %}
+        {{ wishForm.non_field_errors }}
+
+        {% for field in wishForm %}
+        <div class="mb-3 row">
+
+
+            <label for="{{ field.id_for_label }}" class="col-sm-3 col-form-label">{{ field.label }}</label>
+            <div class="col-sm-9">
+                {{ field }}
+            </div>
+
+            {% if field.errors %}
+
+            <div class="alert alert-danger mt-2" role="alert">
+                {% for error in field.errors %}
+                {{ error }}
+                {% endfor %}
+            </div>
+
+            {% endif %}
+
+            {% if field.help_text %}
+            <p class="help">{{ field.help_text|safe }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <div class="container fs-3 d-flex justify-content-center">
+            <div class="d-flex ">
+                <a href="{% url 'wishes:mywishes' %}" class="btn btn-light m-1">Cancel</a>
+            </div>
+            <div class="d-flex ">
+                <form action="" method="post">
+                    <button class="btn btn-warning m-1" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+{% endblock %}

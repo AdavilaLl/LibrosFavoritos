@@ -1,0 +1,123 @@
+{% extends "app/index.html" %}
+{% block title%}addShow{%endblock%}
+{% block content%}
+<div class="d-flex justify-content-between bg-dark text-light ">
+
+    <h1 class="m-4 "><span class="fa fa-user-circle"></span> Hello {{request.session.usuario.nombre}}
+        {{request.session.usuario.apellido}}!</h1>
+    <div class="d-flex align-items-center">
+        <h1 class="m-2"><a href="{% url 'wishes:logout' %}">Logout</a></h1> 
+        <h1 class="m-2"><a href="{% url 'wishes:stats' %}" class="btn btn-info fs-3">View Stats</a></h1>
+        <h1 class="m-2"><a href="{% url 'wishes:addWish' %}" class="btn btn-warning fs-3">Make a Wish!</a></h1>
+    </div>
+
+</div>
+
+<div class="d-flex m-1 justify-content-around ">
+
+    <div class="d-flex flex-column w-50">
+
+        <div class="container ">
+            <div class="d-flex align-items-center py-3">
+                <h1>My Wishes<span class="fa fa-book"></span></h1>
+            </div>
+            <table class="table table-striped col-10 ">
+                <thead>
+                    <tr>
+
+                        <th scope="col">Item</th>
+                        <th scope="col">Date Added</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="fs-5">
+                    {% for wish in authorwishes%}
+
+                    <tr>
+
+                        <td>{{wish.item}}</td>
+                        <td>{{wish.created_at}}</td>
+                        <td class="d-flex align-items-center">
+                            <a href="" class="mx-1 fa fa-trash btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal{{wish.id}}"></a>
+                            <a href="{% url 'wishes:editWish' id=wish.id %} " class="mx-1 fa fa-pencil-square-o btn btn-info "></a>
+                            <form action="{% url 'wishes:relWishUser' id=wish.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-warning mx-1">Granted!</button>
+                            </form>
+                        </td>
+
+                                <!-- The Modal -->
+                        <div class="modal fade" id="myModal{{wish.id}}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                    
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                        <h4 class="modal-title text-danger ">ALERTA</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                    
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                        Esta a punto de borrar: {{wish.item}}
+                                    </div>
+                    
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                        <form action="{% url 'wishes:deleteWish' id=wish.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">Eliminar</button>
+                                        </form>
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                                    </div>
+                    
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="container ">
+            <div class="d-flex align-items-center py-3">
+                <h1>Granted Wishes<span class="fa fa-book"></span></h1>
+            </div>
+            <table class="table table-striped col-10 ">
+                <thead>
+                    <tr>
+                        <th scope="col">Item</th>
+                        <th scope="col">Wisher</th>
+                        <th scope="col">Date Added</th>
+                        <th scope="col">Date Granted</th>
+                        <th scope="col">Likes</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="fs-5">
+                    {% for wish in otherwishes%}
+
+                    <tr>
+                        <td>{{wish.item}}</td>
+                        <td>{{wish.wished_by.first_name}} {{wish.wished_by.last_name}}</td>
+                        <td>{{wish.created_at}}</td>
+                        <td>{{wish.updated_at}}</td>
+                        <td>{{wish.users_who_liked.count}}</td>
+                        <td>                            
+                            <form action="{% url 'wishes:likeWish' id=wish.id %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-primary fa fa-thumbs-up" type="submit"></button>
+                        </form></td>
+                    {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
