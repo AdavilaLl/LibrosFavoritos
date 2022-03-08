@@ -9,9 +9,9 @@
 </div>
 
 <div class="w-50 d-flex flex-column justify-content-start p-5">
-    <h1 class="m-4">Total wishes granted so far for all users: {{totalGrantedWishes}} </h1>
-    <h2 class="m-4">Your granted wishes: {{users.granted_wishes.count}} </h2>
-    <h2 class="m-4">Your pending wishes: {{pendingWishes}}</h2>
+    <h1 class="m-4">Total wishes granted so far for all users: {{allGrantedWishes}} </h1>
+    <h2 class="m-4">Your granted wishes: {{myGrantedWishes}} </h2>
+    <h2 class="m-4">Your pending wishes: {{myNoGrantedWishes}}</h2>
     <div class="d-flex justify-content-center mt-4 ">
         <a class="btn btn-secondary w-25" href="{%url 'wishes:mywishes'%}">Back</a>
     </div>

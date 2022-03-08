@@ -31,7 +31,7 @@
                     </tr>
                 </thead>
                 <tbody class="fs-5">
-                    {% for wish in authorwishes%}
+                    {% for wish in itemUserNoGranted%}
 
                     <tr>
 
@@ -97,21 +97,22 @@
                     </tr>
                 </thead>
                 <tbody class="fs-5">
-                    {% for wish in otherwishes%}
-
-                    <tr>
+                    {% for wish in allItemsGranted%}
+                        <tr>
                         <td>{{wish.item}}</td>
                         <td>{{wish.wished_by.first_name}} {{wish.wished_by.last_name}}</td>
                         <td>{{wish.created_at}}</td>
                         <td>{{wish.updated_at}}</td>
-                        <td>{{wish.users_who_liked.count}}</td>
-                        <td>                            
+                        <td>{{wish.likes.all.count}}</td>
+                        <td>  
+                                                
                             <form action="{% url 'wishes:likeWish' id=wish.id %}" method="post">
                             {% csrf_token %}
                             <button class="btn btn-primary fa fa-thumbs-up" type="submit"></button>
                         </form></td>
-                    {% endfor %}
+
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>

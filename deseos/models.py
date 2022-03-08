@@ -17,7 +17,10 @@ class Wish(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     wished_by = models.ForeignKey(User, related_name='wishes_uploaded', on_delete=models.CASCADE)
-    users_who_granted = models.ManyToManyField(User, related_name='granted_wishes')
-    users_who_liked = models.ManyToManyField(User, related_name='liked_wishes')
+    granted = models.BooleanField(default=False)
     def __str__(self):
         return f'{self.item}'
+
+class Like(models.Model):
+    users = models.ForeignKey(User, related_name='likes', on_delete=models.CASCADE )
+    wishes = models.ForeignKey(Wish, related_name='likes', on_delete=models.CASCADE)

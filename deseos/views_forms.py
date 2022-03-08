@@ -4,10 +4,11 @@ from django import forms
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.contrib import messages
-from .models import User, Wish
+from .models import User, Wish, Like
 import re
 import bcrypt
 from datetime import date
+from django.db.models import Q
 
 class UserForm(forms.ModelForm):
     confirmar_password = forms.CharField(label='Confirmar Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
@@ -94,33 +95,25 @@ class LoginForm(forms.Form):
 class WishForm(forms.ModelForm):
 
     def clean_item(self):
-        title = self.cleaned_data['item']
+        title = self.cleaned_data.get('item')
         length = len(title)
 
-        if length <= 3:
+        if length < 3:
             print(length)
             raise forms.ValidationError(
                     f'El deseo debe tener por lo menos 3 caracteres',
                 )
-
-        if length == 0:
-            print(length)
-            raise forms.ValidationError(
-                    f'Deseo requerido',
-                )
-
         return title
 
     def clean_description(self):
-        description = self.cleaned_data['description']
+        description = self.cleaned_data.get('description')
         length = len(description)
 
-        if length == 0:
+        if length < 3:
             print(length)
             raise forms.ValidationError(
-                    f'Descripcion requerida',
+                    f'La descripcion debe tener por lo menos 3 caracteres',
                 )
-
         return description
 
     class Meta:
@@ -194,36 +187,15 @@ def logout(request):
 
 def mywishes(request):
     count = 0
+
     if request.method == "GET":
-        wishes = Wish.objects.all()
-        authorwishes = User.objects.get(id=request.session['usuario']['id']).wishes_uploaded.all()
-        # Todo los libros que no son del autor
-        otherwishes = Wish.objects.all().exclude(wished_by = User.objects.get(id=request.session['usuario']['id']))
-
-        #grantedWishes = Wish.users_who_granted.all()
-        #print(grantedWishes)
-        granted_wishes = User.objects.get(id=request.session['usuario']['id']).granted_wishes.all()
-        user = User.objects.get(id=request.session['usuario']['id'])
-
-        allWishes = Wish.objects.all()
-        for a in allWishes:
-            print(a)
-            print(a.users_who_liked.count())
-
-
-
-        return render(request, 'deseos/firstPage.html', {
-            'wishes'  : wishes, 
-            'wishForm': WishForm(),
-            'authorwishes': authorwishes,
-            'otherwishes':otherwishes,
-            'granted_wishes':granted_wishes,
-            'allWishes':allWishes,
-        })
-
-
-    if request.method == "POST":
-        print(request.POST)
+        itemUserNoGranted = Wish.objects.filter(wished_by = request.session['usuario']['id']).filter(granted=False).order_by('-id')
+        allItemsGranted = Wish.objects.filter(granted = True).order_by('-id')
+        contexto = {
+            'itemUserNoGranted':itemUserNoGranted,
+            'allItemsGranted':allItemsGranted
+        }
+        return render(request, 'deseos/firstPage.html', contexto)
 
 
 def addWish(request):
@@ -245,7 +217,7 @@ def addWish(request):
                 return redirect(reverse('wishes:mywishes'))
             else:
                 messages.error(request, 'Con errores, solucionar.')
-                return render(request, 'deseos/makeWish.html', {'formModel'  : form})   
+                return render(request, 'deseos/makeWish.html', {'wishForm'  : form})   
 
 def delete(request,id):
     if request.method == 'POST':
@@ -256,21 +228,15 @@ def delete(request,id):
         return redirect(reverse('wishes:mywishes'))
 
 
-def relationWishToUser(request,id):
-    if request.method == 'POST':
-        user = User.objects.get(id = request.session['usuario']['id'])
-        wish = Wish.objects.get(id=id)
-        wish.users_who_granted.add(user)
+def grantWish(request,id):
+
+    wish = Wish.objects.get(id=id)
+    if wish.granted == False:
+        wish.granted = True
+        wish.save()
         messages.success(request,"Deseo concedido!")
         return redirect(reverse('wishes:mywishes'))
 
-def unFavourite(request,id):
-    if request.method == 'POST':
-        user = User.objects.get(id = request.session['usuario']['id'])
-        wish = wish.objects.get(id=id)
-        wish.users_who_granted.remove(user)
-        messages.warning(request,"Se quito el libro de favoritos")
-        return redirect(reverse('wishes:mywishes'))
 
 def editWish(request,id):
     wish = Wish.objects.get(id=id)
@@ -294,28 +260,35 @@ def editWish(request,id):
             return render(request, 'deseo/editWish.html', {'formModel'  : form}) 
 
 def stats(request):
-    count = 0
+
     if request.method == "GET":
-        users = User.objects.get(id=request.session['usuario']['id'])
-        allGrantedWishes = User.objects.all()
-        for a in allGrantedWishes:
-            print(a)
-            count += a.granted_wishes.count()
-        
-        allUserWishesGranted = users.granted_wishes.all().count()
-        wishUserCount = User.objects.get(id=request.session['usuario']['id']).wishes_uploaded.all().count()
-        pendingWishes = wishUserCount-allUserWishesGranted 
-        print(allGrantedWishes)
-        print(count)
-        print(allUserWishesGranted)
-        print(wishUserCount)
-        return render(request, 'deseos/stats.html', {'users': users, 'pendingWishes': pendingWishes, 'totalGrantedWishes':count})
+        myGrantedWishes = Wish.objects.filter(wished_by = request.session['usuario']['id']).filter(granted = True).count()
+        myNoGrantedWishes = Wish.objects.filter(wished_by = request.session['usuario']['id']).filter(granted = False).count()
+        allGrantedWishes = Wish.objects.all().filter(granted = True).count()
+
+        contexto = {
+            'myGrantedWishes':myGrantedWishes,
+            'myNoGrantedWishes':myNoGrantedWishes,
+            'allGrantedWishes': allGrantedWishes,
+        }
+
+        return render(request, 'deseos/stats.html', contexto)
 
 
 def likeWish(request, id):
     if request.method=='POST':
-        user = User.objects.get(id=request.session['usuario']['id'])
+        
         wish = Wish.objects.get(id=id)
-        wish.users_who_liked.add(user)
-        messages.success(request,f"Te gusta el deseo:{wish.item} de {user.first_name} {user.last_name}!")
-        return redirect(reverse('wishes:mywishes'))
+        user = User.objects.get(id=request.session['usuario']['id'])
+        if wish.wished_by == user:
+            messages.error(request,'No puedes dar like a tu propio deseo.')
+            return redirect(reverse('wishes:mywishes'))
+        if Like.objects.filter(users = user, wishes = wish, ).exists():
+            messages.error(request, 'Ya has dado like a este deseo.')
+            return redirect(reverse('wishes:mywishes'))
+        else:
+            user = User.objects.get(id=request.session['usuario']['id'])
+            wish = Wish.objects.get(id=id)
+            Like.objects.create(users=user, wishes=wish)
+            messages.success(request,f"Te gusta el deseo:{wish.item} de {wish.wished_by.first_name} {wish.wished_by.last_name}!")
+            return redirect(reverse('wishes:mywishes'))
