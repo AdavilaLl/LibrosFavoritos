@@ -1,0 +1,147 @@
+{% extends "app/index.html" %}
+{% block title%}dashboard{%endblock%}
+{% block content%}
+<div class="d-flex justify-content-between bg-dark text-light ">
+
+    <h1 class="m-4 "><span class="fa fa-user-circle"></span> Bienvenido {{request.session.usuario.nombre}}
+        {{request.session.usuario.apellido}}!</h1>
+    <div class="d-flex align-items-center">
+        <h1 class="m-2"><a href="{% url 'ayudante:logout' %}">Logout</a></h1>
+        <h1 class="m-2"><a href="{% url 'ayudante:addJob' %}" class="btn btn-warning fs-3">Add Job</a></h1>
+    </div>
+
+</div>
+
+<div class="d-flex m-1 justify-content-around">
+        <div class="container">
+            <div class="d-flex align-items-center py-3">
+                <h1>All Jobs<span class="fa fa-book"></span></h1>
+            </div>
+            <table class="table table-striped col-10 ">
+                <thead>
+                    <tr>
+
+                        <th scope="col">Job</th>
+                        <th scope="col">Location</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="fs-5">
+                    {% for job in jobs%}
+
+                    <tr>
+
+                        <td>{{job.title}}</td>
+                        <td>{{job.location}}</td>
+                        <td >
+                            <a href="{% url 'ayudante:showJob' id=job.id %}" class="mx-1 fa fa-eye btn btn-primary "></a>
+                            <a href="{% url 'ayudante:asignJob' id=job.id %}" class="mx-1 fa fa-plus-circle btn btn-success "> Add to my jobs</a>
+                            {% if job.created_by == user %}
+                            <a href="{% url 'ayudante:editJob' id=job.id %}" class="mx-1 fa fa-pencil-square-o btn btn-warning "></a>
+                            <a href="" class="mx-1 fa fa-trash btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#myModal{{job.id}}"></a>
+                            {% endif %}
+                        </td>
+
+                        <!-- The Modal -->
+                        <div class="modal fade" id="myModal{{job.id}}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                        <h4 class="modal-title text-danger ">ALERTA</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                        Esta a punto de borrar: {{job.title}}
+                                    </div>
+
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                        <form action="{% url 'ayudante:deleteJob' id=job.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger"
+                                                data-bs-dismiss="modal">Eliminar</button>
+                                        </form>
+                                        <button type="button" class="btn btn-light"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="container">
+
+            <div class="d-flex align-items-center py-3">
+                <h1>My Jobs<span class="fa fa-book"></span></h1>
+            </div>
+            <table class="table table-striped col-10 ">
+                <thead>
+                    <tr>
+                        <th scope="col">Job Name</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="fs-5">
+                    {% for job in myAsignedJobs%}
+                    <tr>
+                        <td>{{job.title}}</td>
+
+                        <td>
+                                <a href="{% url 'ayudante:showJob' id=job.id %}" class="mx-1 fa fa-eye btn btn-primary"></a>
+                                <a href="{% url 'ayudante:doneJob' id=job.id %}" class="btn btn-success fa fa-check-circle" data-bs-toggle="modal"
+                                data-bs-target="#myModalDone{{job.id}}" > Done! </a>
+                        </td>
+
+                    </tr>
+                    <!-- The Modal -->
+                    <div class="modal fade" id="myModalDone{{job.id}}">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title text-success ">Confirmar</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                    Se ha culminado con la tarea: {{job.title}} ?
+                                </div>
+
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <form action="{% url 'ayudante:doneJob' id=job.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-success"
+                                            data-bs-dismiss="modal">Finalizada</button>
+                                    </form>
+                                    <button type="button" class="btn btn-light"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

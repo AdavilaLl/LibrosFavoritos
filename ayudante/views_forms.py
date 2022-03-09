@@ -4,7 +4,7 @@ from django import forms
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.contrib import messages
-from .models import User, Wish, Like
+from .models import User, Job
 import re
 import bcrypt
 from datetime import date
@@ -90,54 +90,75 @@ class LoginForm(forms.Form):
         )
     password = forms.CharField(label=("Password"), widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder':'password'}))
 
+class JobForm(forms.ModelForm):
 
-
-class WishForm(forms.ModelForm):
-
-    def clean_item(self):
-        title = self.cleaned_data.get('item')
+    def clean_title(self):
+        title = self.cleaned_data['title']
         length = len(title)
 
         if length < 3:
             print(length)
             raise forms.ValidationError(
-                    f'El deseo debe tener por lo menos 3 caracteres',
+                    f'El nombre debe tener mas de 3 caracteres.',
+                )
+
+        if length == 0:
+            print(length)
+            raise forms.ValidationError(
+                    f'Nombre requerido',
                 )
         return title
 
+
     def clean_description(self):
-        description = self.cleaned_data.get('description')
+        description = self.cleaned_data['description']
         length = len(description)
 
-        if length < 3:
+        if length <= 1:
             print(length)
             raise forms.ValidationError(
-                    f'La descripcion debe tener por lo menos 3 caracteres',
+                    f'La descripcion debe tener mas de 10 caracteres.',
                 )
         return description
 
+    def clean_location(self):
+        location = self.cleaned_data['location']
+        length = len(location)
+
+        if length == 0:
+            print(length)
+            raise forms.ValidationError(
+                    f'Location no debe quedar vacio.',
+                )
+        return location
+
+
     class Meta:
-        model = Wish
-        fields = ['item', 'description']
+        model = Job
+        fields = ['title', 'description', 'location']
 
         labels = {
-            'item':'Item:',
-            'description':'Descripcion'
+            'title':'Title:',
+            'description':'Description',
+            'location': 'Location',
+            
         }
 
         widgets = {
-            'item': forms.TextInput(attrs={'class': 'form-control'}),
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'location':forms.TextInput(attrs={'class': 'form-control'}),
         }
+
 
 ##### Metodos ###########
 def main(request):
     if request.method == 'GET':
         if 'usuario' in request.session:
             messages.info(request,'Estas logueado')
-            return redirect(reverse('wishes:mywishes'))
+            return redirect(reverse('ayudante:dashboard'))
         else:
-            return render(request, 'deseos/main.html' , {'formRegister'  : UserForm(),'formLogin'  : LoginForm(),})
+            return render(request, 'ayudante/main.html' , {'formRegister'  : UserForm(),'formLogin'  : LoginForm(),})
     
     if request.method == "POST":
         print(request.POST)
@@ -150,10 +171,10 @@ def main(request):
             print(usuario.password)
             usuario.save()
             messages.success(request,'Usuario creado correctamente')
-            return redirect(reverse('wishes:main'))
+            return redirect(reverse('ayudante:main'))
         else:
             #messages.error(request,'Con errores, validar nuevamente')
-            return render(request, 'deseos/main.html', {'formRegister':form, 'formLogin'  : LoginForm()})
+            return render(request, 'ayudante/main.html', {'formRegister':form, 'formLogin'  : LoginForm()})
 
 def login(request):
 
@@ -168,127 +189,107 @@ def login(request):
                 if bcrypt.checkpw(form_password.encode(), user.password.encode()):
                     request.session['usuario'] = {'nombre':user.first_name , 'apellido':user.last_name, 'email':user.email, 'id':user.id}
                     print(request.session['usuario'])
-                    return redirect(reverse('wishes:mywishes'))
+                    return redirect(reverse('ayudante:dashboard'))
                 else:
                     messages.error(request,'Contraseña o Email invalido')
-                    return redirect(reverse('wishes:main'))
+                    return redirect(reverse('ayudante:main'))
             else:
                 messages.error(request,'Contraseña o Email invalido')
-                return redirect(reverse('wishes:main'))
+                return redirect(reverse('ayudante:main'))
         else:
             #messages.error(request,'Con errores, validar nuevamente')
-            return render(request, 'deseos/main.html', {'formRegister':UserForm(), 'formLogin'  : form()})
+            return render(request, 'ayudante/main.html', {'formRegister':UserForm(), 'formLogin'  : form()})
 
 def logout(request):
     if 'usuario' in request.session:
         del request.session['usuario']
-    return redirect('/deseos')
+    return redirect('/')
 
-
-def mywishes(request):
-    count = 0
-
+def dashboard(request):
+    user = User.objects.get(id=request.session['usuario']['id'])
     if request.method == "GET":
-        itemUserNoGranted = Wish.objects.filter(wished_by = request.session['usuario']['id']).filter(granted=False).order_by('-id')
-        allItemsGranted = Wish.objects.filter(granted = True).order_by('-id')
+        jobs = Job.objects.filter(userJob = None)
+        myAsignedJobs = Job.objects.filter(userJob = user)
         contexto = {
-            'itemUserNoGranted':itemUserNoGranted,
-            'allItemsGranted':allItemsGranted
-        }
-        return render(request, 'deseos/firstPage.html', contexto)
-
-
-def addWish(request):
-
-        if request.method == "GET":
-            context = {
-                'wishForm':WishForm()
+            'jobs':jobs,
+            'myAsignedJobs':myAsignedJobs,
+            'user' : user
             }
-            return render(request, 'deseos/makeWish.html', context)
-
-        if request.method == "POST":
-            form = WishForm(request.POST)
-            if form.is_valid():
-                wish=form.save(commit=False)
-                user = User.objects.get(id = request.session['usuario']['id'])
-                wish.wished_by = user
-                wish.save()
-                messages.success(request, 'Deseo creado correctamente')
-                return redirect(reverse('wishes:mywishes'))
-            else:
-                messages.error(request, 'Con errores, solucionar.')
-                return render(request, 'deseos/makeWish.html', {'wishForm'  : form})   
-
-def delete(request,id):
-    if request.method == 'POST':
-        wishD = Wish.objects.get(id=id)
-        print(wishD.item)
-        wishD.delete()
-        messages.success(request,"Eliminado correctamente")
-        return redirect(reverse('wishes:mywishes'))
+        return render(request, 'ayudante/dashboard.html', contexto)
 
 
-def grantWish(request,id):
-
-    wish = Wish.objects.get(id=id)
-    if wish.granted == False:
-        wish.granted = True
-        wish.save()
-        messages.success(request,"Deseo concedido!")
-        return redirect(reverse('wishes:mywishes'))
 
 
-def editWish(request,id):
-    wish = Wish.objects.get(id=id)
-    if request.method == 'GET':
-        form = WishForm(instance=wish)
+def addJob(request):
+    if request.method == "GET":
         context = {
-            'wishForm':form
+            'jobForm':JobForm()
         }
-        return render(request, 'deseos/editWish.html', context)
+        return render(request, 'ayudante/addJob.html', context)
+    if request.method == "POST":
+        form = JobForm(request.POST)
+        if form.is_valid():
+            job = form.save(commit=False)
+            user = User.objects.get(id=request.session['usuario']['id'])
+            job.created_by = user
+            job.save()
+            messages.success(request, 'Trabajo creado correctamente')
+            return redirect(reverse('ayudante:dashboard'))
+        else:
+            messages.error(request, 'Con errores, solucionar.')
+            return render(request, 'ayudante/addJob.html', {'jobForm'  : form})   
+
+def showJob(request, id):
+    job = Job.objects.get(id=id)
+    user = User.objects.get(id=request.session['usuario']['id'])
+    if request.method == "GET":
+        context = {
+            'job': job,
+            'user':user
+        }
+        return render(request, 'ayudante/showJob.html', context)
+
+def deleteJob(request, id):
+
+    if request.method == 'POST':
+        jobD = Job.objects.get(id=id)
+        print(jobD.title)
+        jobD.delete()
+        messages.success(request,"Eliminado correctamente")
+        return redirect(reverse('ayudante:dashboard'))
+
+def doneJob(request, id):
+    jobD = Job.objects.get(id=id)
+    print(jobD.title)
+    jobD.delete()
+    messages.success(request,"Tarea finalizada correctamente")
+    return redirect(reverse('ayudante:dashboard'))
+
+def editJob(request,id):
+    job = Job.objects.get(id=id)
+    if request.method == 'GET':
+        form = JobForm(instance=job)
+        context = {
+            'jobForm':form
+        }
+        return render(request, 'ayudante/editJob.html', context)
 
     if request.method == "POST":
         print(request.POST)
-        show = Wish.objects.get(id=id)
-        form = WishForm(request.POST,instance=show)
+        show = Job.objects.get(id=id)
+        form = JobForm(request.POST,instance=show)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Deseo editado correctamente')
-            return redirect('wishes:mywishes')
+            messages.success(request, 'Trabajo editado correctamente')
+            return redirect('ayudante:dashboard')
         else:
             messages.error(request, 'Con errores, solucionar.')
-            return render(request, 'deseo/editWish.html', {'formModel'  : form}) 
+            return render(request, 'ayudante/editJob.html', {'jobForm'  : form}) 
 
-def stats(request):
-
-    if request.method == "GET":
-        myGrantedWishes = Wish.objects.filter(wished_by = request.session['usuario']['id']).filter(granted = True).count()
-        myNoGrantedWishes = Wish.objects.filter(wished_by = request.session['usuario']['id']).filter(granted = False).count()
-        allGrantedWishes = Wish.objects.all().filter(granted = True).count()
-
-        contexto = {
-            'myGrantedWishes':myGrantedWishes,
-            'myNoGrantedWishes':myNoGrantedWishes,
-            'allGrantedWishes': allGrantedWishes,
-        }
-
-        return render(request, 'deseos/stats.html', contexto)
-
-
-def likeWish(request, id):
-    if request.method=='POST':
-        
-        wish = Wish.objects.get(id=id)
-        user = User.objects.get(id=request.session['usuario']['id'])
-        if wish.wished_by == user:
-            messages.error(request,'No puedes dar like a tu propio deseo.')
-            return redirect(reverse('wishes:mywishes'))
-        if Like.objects.filter(users = user, wishes = wish, ).exists():
-            messages.error(request, 'Ya has dado like a este deseo.')
-            return redirect(reverse('wishes:mywishes'))
-        else:
-            user = User.objects.get(id=request.session['usuario']['id'])
-            wish = Wish.objects.get(id=id)
-            Like.objects.create(users=user, wishes=wish)
-            messages.success(request,f"Te gusta el deseo:{wish.item} de {wish.wished_by.first_name} {wish.wished_by.last_name}!")
-            return redirect(reverse('wishes:mywishes'))
+def asignJob(request,id):
+    user = User.objects.get(id=request.session['usuario']['id'])
+    job = Job.objects.get(id=id)
+    job.userJob = user
+    job.save()
+    messages.success(request, f'Trabajo {job.title} agregado a tu lista.')
+    return redirect(reverse('ayudante:dashboard'))

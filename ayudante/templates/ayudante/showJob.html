@@ -1,0 +1,28 @@
+{% extends "app/index.html" %}
+{% block title%}Job{%endblock%}
+{% block content%}
+<div class="d-flex justify-content-between bg-dark text-light ">
+    <div>
+        <h1 class="m-4 "><span class="fa fa-user-circle"></span>Job Detail</h1>
+    </div>
+    <div class=" d-flex  ">
+        <h1 class="m-4 "><a href="{% url 'ayudante:dashboard' %}">Back</a></h1>
+        <h1 class="m-4 "><a href="{% url 'ayudante:logout' %}">Logout</a></h1>
+    </div>
+
+</div>
+
+<div class="w-75 d-flex flex-column justify-content-start p-5">
+
+    <h1>{{job.title}}</h1>
+    <h3>{{job.description}}</h3>
+    <h3>{{job.location}}</h3>
+
+    {% if job.userJob != user %}
+    <a class="btn btn-success fa fa-plus w-25 fs-3"  href="{% url 'ayudante:asignJob' id=job.id %}">Add to my jobs</a>
+    {% endif %}
+
+</div>
+
+
+{% endblock %}
