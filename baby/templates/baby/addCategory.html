@@ -1,0 +1,106 @@
+{% extends "baby/indexAdmin.html" %}
+{% block title%}Añadir Categoria{%endblock%}
+{% block content%}
+
+<h1 class="text-center">Agregar categoria</h1>
+<div class="d-flex justify-content-between p-5">
+
+    <form class="container d-flex flex-column w-50 " action="" method="post">
+        {% csrf_token %}
+        {{ CategoryForm.non_field_errors }}
+
+        {% for field in CategoryForm %}
+        <div class="mb-3 row fs-4">
+            <label for="{{ field.id_for_label }}" class="col-sm-3 col-form-label">{{ field.label }}</label>
+            <div class="col-sm-9 fs-4">
+                {{ field }}
+            </div>
+
+            {% if field.errors %}
+
+            <div class="alert alert-danger mt-2" role="alert">
+                {% for error in field.errors %}
+                {{ error }}
+                {% endfor %}
+            </div>
+
+            {% endif %}
+
+            {% if field.help_text %}
+            <p class="help">{{ field.help_text|safe }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <div class="d-flex flex-column">
+            <div class="container fs-3 d-flex justify-content-center">
+                <div class="d-flex ">
+                    <a href="" class="btn btn-light m-1">Cancel</a>
+                </div>
+                <div class="d-flex ">
+                    <form action="" method="post">
+                        <button class="btn btn-warning m-1" type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+            <div class="pt-5">
+                <table id="myTable" class="display fs-5 ">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Categoria</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                        <tr>
+                            <td>{{category.id}}</td>
+                            <td>{{category.name}}</td>
+                            <td>
+                                <a href="{% url 'baby:editCat' id=category.id %}" class="mx-1 fa fa-pencil-square-o btn btn-warning "></a>
+                                <a href="{% url 'baby:deleteCat' id=category.id %}" class="mx-1 fa fa-trash btn btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#myModal{{category.id}}"></a>
+                            </td>
+                        </tr>
+                        <!-- The Modal -->
+                        <div class="modal fade" id="myModal{{category.id}}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                        <h4 class="modal-title text-danger ">ALERTA</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                        Esta a punto de borrar: {{category.name}}
+                                    </div>
+
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                        <form action="{% url 'baby:deleteCat' id=category.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger"
+                                                data-bs-dismiss="modal">Eliminar</button>
+                                        </form>
+                                        <button type="button" class="btn btn-light"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+    {% load static %}
+    <img class="halfImage " src="{% static 'img/babyClothesAdd.jpg' %}" alt="Error de carga, por favor actualizar">
+</div>
+
+
+{% endblock %}

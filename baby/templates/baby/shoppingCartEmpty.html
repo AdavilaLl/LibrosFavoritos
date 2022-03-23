@@ -1,0 +1,33 @@
+{% extends "baby/index.html" %}
+{% block title%}Carrito Vacio{%endblock%}
+{% block content%}
+<div class="d-flex justify-content-end ">
+    <div class="vw-100 d-flex align-items-center">
+        <div class="container-fluid mt-100 ">
+            <div class="row">
+                <div class="col-md-12 d-flex justify-content-center align-items-center ">
+                    <div class="card  h-100 d-flex mb-5">
+                        <div class="card-header bg-light ">
+                            <h5>Aviso <i class="fa-solid fa-bullhorn"></i></h5>
+                        </div>
+                        <div class="card-body cart bg-light">
+                            <div class="col-sm-12 empty-cart-cls text-center"> <img src="https://i.imgur.com/dCdflKN.png" width="160" height="160" class="img-fluid mb-4 mr-3">
+                                <h3 class=""><strong>Tu carrito está vacío</strong></h3>
+                                <h4>Añade un producto y dale un regalo a tu bebé <span class="fa-solid fa-face-grin-wink"></span> </h4> <a href="{% url 'baby:mainPage' %}" class="btn btn-primary cart-btn-transform m-3" data-abc="true">Volver a las compras!</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-4 bg-grey vh-100">
+            
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}

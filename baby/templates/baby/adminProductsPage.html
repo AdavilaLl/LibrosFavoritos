@@ -1,0 +1,80 @@
+{% extends "baby/indexAdmin.html" %}
+{% block title%}BabyShop Admin{%endblock%}
+{% block content%}
+<div class="">
+    <h1 class="text-center">Lista de Productos</h1>
+    <div class="d-flex py-4">
+        <a href="{% url 'baby:addProduct' %}" class="mx-1 btn btn-success p-2 fs-4">Nuevo Producto <i class="fa-solid fa-circle-plus"></i></a>
+    </div>
+    <table id="myTable" class="display fs-4 ">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Categoria</th>
+                <th>Género</th>
+                <th>Talla</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in productos %}
+            <tr>
+                <td>{{product.id }}</td>
+                <td>{{product.name}}</td>
+                <td>S/{{product.price}}</td>
+                <td>{{product.prodCat}}</td>
+                <td>{{product.get_prodGender_display}}</td>
+                <td>{{product.get_size_display}}</td>
+                <td>{{product.stock}}</td>
+
+                <td>
+                    <a href="{% url 'baby:showProductDetail' id=product.id %}" class="mx-1 fa fa-eye btn btn-info "></a>
+                    <a href="{% url 'baby:editProd' id=product.id %}" class="mx-1 fa fa-pencil-square-o btn btn-warning "></a>
+                    <a href="" class="mx-1 fa fa-trash btn btn-danger" data-bs-toggle="modal"
+                        data-bs-target="#myModal{{product.id}}"></a>
+                </td>
+            </tr>
+            <!-- The Modal -->
+            <div class="modal fade" id="myModal{{product.id}}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title text-danger ">ALERTA</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            Esta a punto de borrar: {{product.name}}
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <form action="{% url 'baby:deleteProd' id=product.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger"
+                                    data-bs-dismiss="modal">Eliminar</button>
+                            </form>
+                            <a href="" class="btn btn-light"
+                                data-bs-dismiss="modal">Cancelar</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends "baby/index.html" %}
+{% block title%}Login{%endblock%}
+{% block navbar %}
+{% endblock %}
+{% block content%}
+
+<div class="bodylogin vh-100">
+    <div class="d-flex justify-content-center h-100">
+        <div class="card">
+            <div class="card-header">
+                <h3>Ingresar</h3>
+                <div class="d-flex justify-content-end social_icon">
+                    <span><i class="fab fa-facebook-square"></i></span>
+                    <span><i class="fab fa-google-plus-square"></i></span>
+                    <span><i class="fab fa-twitter-square"></i></span>
+                </div>
+            </div>
+            <div class="card-body">
+                <form action="{% url 'baby:login'%}" method="post">
+                    {% csrf_token %}
+                    {{ formLogin.non_field_errors }}
+
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        </div>
+                        {{ formLogin.correo }}
+                        {% if field.errors %}
+
+                        <div class="alert alert-danger mt-2" role="alert">
+                            {% for error in field.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+
+                        {% endif %}
+
+                        {% if field.help_text %}
+                        <p class="help">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                        </div>
+                        {{ formLogin.password}}
+                        {% if field.errors %}
+
+                        <div class="alert alert-danger mt-2" role="alert">
+                            {% for error in field.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+
+                        {% endif %}
+
+                        {% if field.help_text %}
+                        <p class="help">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!--{% for field in formLogin %}
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        </div>
+                        {{ field }}
+                        {% if field.errors %}
+
+                        <div class="alert alert-danger mt-2" role="alert">
+                            {% for error in field.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+
+                        {% endif %}
+
+                        {% if field.help_text %}
+                        <p class="help">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}-->
+
+                    <div class="form-group">
+                        <button class="btn float-right login_btn" type="submit">Login</button>
+                    </div>
+                    <div class="row align-items-center remember">
+                        <input type="checkbox">Remember Me
+                    </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-center links">
+                    Don't have an account?<a href="{% url 'baby:register'%}">Sign Up</a>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <a href="#">Forgot your password?</a>
+                </div>
+            </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+
+<!--<div class=" vh-100 d-flex flex-column justify-content-center align-items-center">
+    <div class="col-4">
+        <div class="d-flex align-content-center justify-content-center">
+            <h1>Login</h1>
+        </div>
+        <div class="container">
+            <hr>
+        </div>
+    
+        <div class="container">
+            <form action="{% url 'books:login' %}" method="post">
+    
+                {% csrf_token %}
+                {{ formLogin.non_field_errors }}
+    
+                {% for field in formLogin %}
+                <div class="mb-3 row">
+    
+    
+                    <label for="{{ field.id_for_label }}" class="col-sm-3 col-form-label">{{ field.label }}</label>
+                    <div class="col-sm-9">
+                        {{ field }}
+                    </div>
+    
+                    {% if field.errors %}
+    
+                    <div class="alert alert-danger mt-2" role="alert">
+                        {% for error in field.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+    
+                    {% endif %}
+    
+                    {% if field.help_text %}
+                    <p class="help">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+    
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-primary " type="submit">Enviar</button>
+                </div>
+            </form>
+    
+        </div>
+
+    </div>
+
+</div>-->
+
+
+
+
+
+
+
+
+{% endblock %}

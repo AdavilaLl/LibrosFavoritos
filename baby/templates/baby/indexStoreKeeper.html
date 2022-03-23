@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://use.fontawesome.com/682aac1834.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+        integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css"
+        integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <script src="https://kit.fontawesome.com/2e11c35c7f.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <!--<script src="{% static 'js/script.js' %}"></script>-->
+    <script>
+
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        });
+    </script>
+    <title>{% block title%}BabyShop StoreKeeper{%endblock%}</title>
+</head>
+
+
+<body>
+    <div class="allNavBar">
+        <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand fs-2 text-white py-0 font-weight-bold" href="#">BabyShop StoreKeeper<span-
+                        class="fa-solid fa-screwdriver-wrench"></span-></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse d-flex justify-content-end font-weight-bold"
+                    id="navbarSupportedContent">
+                    <div>
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link fs-4 text-white mx-3 " aria-current="page" href="#">Inicio <span
+                                        class="fa-solid fa-house"></span> </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link fs-4 text-white mx-3 " href="#">Soporte <span
+                                        class="fa-solid fa-circle-info"></span> </a>
+                            </li>
+                        </ul>
+
+                    </div>
+                    <div class="d-flex me-5">
+                        <button class="btn btn-outline-dark m-3  fs-4 withoutBorder text-light " type="submit">Logout
+                            <span class="fa-solid fa-door-open"></span></button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
+                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                    <div class="btn-group-vertical col-12">
+                        <a href="{% url 'baby:storeKeeperPage' %}"
+                            class="btn btn-outline-light py-2  withoutBorder fs-4  d-flex justify-content-between"
+                            aria-current="page">
+                            <div class="w1">
+                                <span>Inicio</span>
+                            </div>
+                            <div class="iconw">
+                                <i class="fa-solid fa-house"></i>
+                            </div>
+                        </a>
+                        <a href="{% url 'baby:showProducts' %}"
+                            class="btn btn-outline-light py-2  withoutBorder fs-4  d-flex justify-content-between"
+                            aria-current="page">
+                            <div class="w1">
+                                <span>Productos</span>
+                            </div>
+                            <div class="iconw">
+                                <i class="fa-solid fa-shirt"></i>
+                            </div>
+                        </a>
+                        <a href="{% url 'baby:addCategory' %}"
+                            class="btn btn-outline-light py-2  withoutBorder fs-4 d-flex justify-content-between"
+                            aria-current="page">
+                            <div class="w1">
+                                <span>Categorias</span>
+                            </div>
+                            <div class="iconw">
+                                <i class="fa-solid fa-grip"></i>
+                            </div>
+                        </a>
+                    </div>
+                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
+                        id="menu">
+                    </ul>
+                </div>
+            </div>
+            <div class="col py-3">
+                {% block content%}
+                <h2>{% block nameuser%}Bievenido Armando Davila!{% endblock%}</h2>
+                <p class="lead fs-3 justifyText">
+                    Usted se encuentra en la pantalla de administración del sistema BabyShop, desde aquí podrá agregar,
+                    editar y eliminar los productos
+                    y categorías que se utilicen para el negocio.</p>
+                <p class="lead fs-3 justifyText">
+                    Haciendo clic en las opciones de la barra lateral podrá acceder tanto al detalle de los productos y
+                    categorias.</p>
+                <h2 class="justifyText">Ante cualquier duda o error del sistema, contactarnos dando clic al botón
+                    SOPORTE de la barra superior.</h2>
+                <div class="d-flex justify-content-center">
+                    {% load static %}
+                    <img class="toolsWH pt-5" src="{% static 'img/tools.png' %}"
+                        alt="Error de carga, por favor actualizar.">
+                </div>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+    <script>
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+            }
+        {% if messages %}
+            {% for message in messages %}
+                toastr.{{message.tags}}("{{ message }}")
+            {% endfor %}
+        {% endif %}
+    </script>
+
+</body>
+
+</html>

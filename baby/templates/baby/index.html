@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://use.fontawesome.com/682aac1834.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+        integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css"
+        integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <script src="https://kit.fontawesome.com/2e11c35c7f.js" crossorigin="anonymous"></script>
+    <!--<script src="{% static 'js/script.js' %}"></script>-->
+    <title>{% block title%}BabyShop{%endblock%}</title>
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        });
+    </script>
+</head>
+
+
+<body>
+    {% block navbar%}
+    <div class="allNavBar">
+        <nav class="navbar navbar-expand-lg navbar-light colorGreenBaby">
+            <div class="container-fluid">
+                <a class="navbar-brand fs-2 text-white py-0 font-weight-bold" href="#">BabyShop <span
+                        class="fa-solid fa-baby-carriage"></span></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse d-flex justify-content-between " id="navbarSupportedContent">
+                    <div>
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link fs-4 text-white mx-3 " aria-current="page" href="{% url 'baby:mainPage' %}">Inicio</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link fs-4 text-white mx-3 " href="#">Sobre Nosotros</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle fs-4 text-white mx-3" href="{% url 'baby:productGrid' %}" id="navbarDropdown"
+                                    role="button" data-bs-toggle="dropdown" >
+                                    Productos
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><p class="mx-4 my-1">Edad del Bebé</p></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'baby:productBySize' size='1' %}">0-3 meses</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'baby:productBySize' size='2' %}">3-6 meses</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'baby:productBySize' size='3' %}">6-12 meses</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'baby:productBySize' size='4' %}">12-18 meses</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'baby:productBySize' size='5' %}">18-24 meses</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'baby:productBySize' size='6' %}">2 años</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'baby:productBySize' size='7' %}">3 años</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link fs-4 text-white mx-3 " href="#">Contáctanos</a>
+                            </li>
+                        </ul>
+
+                    </div>
+                    {% if request.session.usuario %}
+                    <h2 class="fs-1 text-white mx-3">Bienvenida {{request.session.usuario.nombre}} {{request.session.usuario.apellido}}</h2>
+                    {% if cart %}
+                    <a class="text-white" href="{% url 'baby:shoppingCart' %}"><span
+                            class=" fs-1 fa-solid fa-cart-shopping btn btn-warning "></span></a>
+                    {% else %}
+                    <a class="text-white" href="{% url 'baby:shoppingCartempty' %}"><span
+                        class=" fs-1 fa-solid fa-cart-shopping btn btn-warning "></span></a>
+                    {% endif %}
+                    <div class="d-flex me-5">
+                        <a href="{% url 'baby:logout' %}"
+                            class="btn btn-outline-dark m-3  fs-1 withoutBorder text-light ">Salir
+                            <i class="fa-solid fa-door-open"></i></a>
+                    </div>
+                    {% else %}
+                    <div class="d-flex me-5">
+                        <a href="{% url 'baby:login' %}"
+                            class="btn btn-outline-dark m-3  fs-2 withoutBorder text-light " type="submit">Ingresar
+                            <span class="fa-solid fa-user"></span></a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </div>
+    {% endblock %}
+    {% block content%}
+
+    {% endblock %}
+    <script>
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+            }
+        {% if messages %}
+            {% for message in messages %}
+                toastr.{{message.tags}}("{{ message }}")
+            {% endfor %}
+        {% endif %}
+    </script>
+
+</body>
+
+</html>

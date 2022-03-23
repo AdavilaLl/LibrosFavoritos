@@ -1,0 +1,64 @@
+{% extends "baby/indexAdmin.html" %}
+{% block title%}Editar Producto{%endblock%}
+{% block content%}
+
+<h1 class="text-center">Editar Producto</h1>
+<div class="d-flex justify-content-start p-5">
+
+    <form class="d-flex flex-column w-50 " action="" method="post" enctype = "multipart/form-data" >
+        {% csrf_token %}
+        {{ ProductForm.non_field_errors }}
+
+        {% for field in ProductForm %}
+        <div class="mb-3 row fs-4">
+            <label for="{{ field.id_for_label }}" class="col-sm-3 col-form-label">{{ field.label }}</label>
+            <div class="col-sm-9 fs-4">
+                {{ field }}
+            </div>
+
+            {% if field.errors %}
+
+            <div class="alert alert-danger mt-2" role="alert">
+                {% for error in field.errors %}
+                {{ error }}
+                {% endfor %}
+            </div>
+
+            {% endif %}
+
+            {% if field.help_text %}
+            <p class="help">{{ field.help_text|safe }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <div class="d-flex flex-column">
+            <div class="container fs-3 d-flex justify-content-center">
+                <div class="d-flex ">
+                    <a href="{% url 'baby:showProducts' %}" class="btn btn-light m-1">Cancel</a>
+                </div>
+                <div class="d-flex ">
+                    <button class="btn btn-warning m-1" type="submit">Submit</button>
+                </div>
+            </div>
+            <div class="pt-5">
+                <p class="fs-2">Fecha de Creación: {{product.created_at}}</p>
+                <p class="fs-2">Fecha de Última Actualización: {{product.updated_at}}</p>
+            </div>
+        </div>
+    </form>
+    
+    <div class="d-flex justify-content-center align-items-center">
+        {% if product.img %}
+        <div class = "w-50">
+            <img class="ms-5" src="{{ product.img.url }}" alt="Error de carga, por favor actualizar">
+        {% else %}
+        </div>
+        {% load static %}
+        <img class="halfImage" src="{% static 'img/babyClothesAdd.jpg' %}" alt="Error de carga, por favor actualizar">
+        {% endif %}
+
+    </div>
+</div>
+
+
+{% endblock %}

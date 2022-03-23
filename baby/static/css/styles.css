@@ -1,0 +1,254 @@
+.colorGreenBaby {
+    background-color: #516F87
+}
+
+.withoutBorder {
+    border-style: none;
+}
+
+.halfImage {
+    width: 40%;
+    height: 40%;
+}
+
+.beigeBG {
+    background-color: #EACCAD;
+}
+
+.lateralbarwidth {
+    width: 10%;
+    flex: 10%;
+    height: 100%;
+}
+
+.justifyText {
+    text-align: justify;
+}
+
+.toolsWH {
+    width: 20%;
+    height: 20%;
+}
+
+.imgDetail {
+    width: 100%;
+    height: 60%;
+}
+
+/* Made with love by Mutiullah Samim*/
+
+@import url('https://fonts.googleapis.com/css?family=Numans');
+
+
+.bodylogin {
+    background-image: url('https://capitalmomnebraska.com/wp-content/uploads/2016/12/capitalMOM-save-on-baby-items-thrift-storage-shopping.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100%;
+    font-family: 'Numans', sans-serif;
+}
+
+.bodyRegister {
+    background-image: url('https://s1.1zoom.me/big0/534/Toys_Teddy_bear_Wood_planks_Sitting_541911_1280x854.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100%;
+    font-family: 'Numans', sans-serif;
+}
+
+
+.container {
+    height: 100%;
+    align-content: center;
+}
+
+.card {
+    height: 320px;
+    margin-top: auto;
+    margin-bottom: auto;
+    width: 400px;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.card2 {
+    height: 44vh;
+    margin-top: auto;
+    margin-bottom: auto;
+    width: 30vw;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.social_icon span {
+    font-size: 60px;
+    margin-left: 10px;
+    color: #FFC312;
+}
+
+.social_icon span:hover {
+    color: white;
+    cursor: pointer;
+}
+
+.card-header h3 {
+    color: white;
+}
+
+.social_icon {
+    position: absolute;
+    right: 20px;
+    top: -45px;
+}
+
+.input-group-prepend span {
+    width: 50px;
+    background-color: #FFC312;
+    color: black;
+    border: 0 !important;
+}
+
+input:focus {
+    outline: 0 0 0 0 !important;
+    box-shadow: 0 0 0 0 !important;
+
+}
+
+.remember {
+    color: white;
+}
+
+.remember input {
+    width: 20px;
+    height: 20px;
+    margin-left: 15px;
+    margin-right: 5px;
+}
+
+.login_btn {
+    color: black;
+    background-color: #FFC312;
+    width: 100px;
+}
+
+.login_btn:hover {
+    color: black;
+    background-color: white;
+}
+
+.links {
+    color: white;
+}
+
+.links a {
+    margin-left: 4px;
+}
+
+.doubleScreen {
+    width: 100vw;
+    height: 100vh;
+    background-image: url('https://s1.1zoom.me/big0/534/Toys_Teddy_bear_Wood_planks_Sitting_541911_1280x854.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.imgBar {
+    width: 100vw;
+    height: 70vh;
+}
+
+.bgLittleWhite {
+    background-color: #F7F7F7;
+}
+
+.imgPortfolio {
+    width: 15vw;
+    height: 30vh;
+}
+
+.bgKit {
+    background-color: #EBDFD8;
+    width: 100vw;
+    height: 50vh;
+
+}
+
+.imgKit {
+    width: 50vw;
+    height: 50vh;
+}
+
+.colorKit {
+    color: #9C6169;
+    text-decoration: none;
+
+}
+
+.colorKit span:hover {
+    color: rgb(104, 32, 32);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+
+a:visited {
+    text-decoration: none;
+}
+
+
+a:hover {
+    text-decoration: none;
+}
+
+
+a:active {
+    text-decoration: none;
+}
+
+
+.skyblueTxt{
+    color: #00A9E0;
+}
+
+@media (min-width: 1025px) {
+    .h-custom {
+    height: 100vh !important;
+    }
+    }
+    
+    .card-registration .select-input.form-control[readonly]:not([disabled]) {
+    font-size: 1rem;
+    line-height: 2.15;
+    padding-left: .75em;
+    padding-right: .75em;
+    }
+    
+    .card-registration .select-arrow {
+    top: 13px;
+    }
+    
+    .bg-grey {
+    background-color: #eae8e8;
+    }
+    
+    @media (min-width: 992px) {
+    .card-registration-2 .bg-grey {
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+    }
+    }
+    
+    @media (max-width: 991px) {
+    .card-registration-2 .bg-grey {
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    }
+    }
+
+.littleSelect{
+    width: 20%;
+}
+
+

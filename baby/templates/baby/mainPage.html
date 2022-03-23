@@ -1,0 +1,105 @@
+{% extends "baby/index.html" %}
+{% block title%}Baby Shop :){%endblock%}
+{% block content%}
+
+
+<div class="d-flex flex-column">
+
+    <div id="carouselExampleDark" class="carousel carousel-dark carousel slide carousel-fade" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active"
+                aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1"
+                aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2"
+                aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active" data-bs-interval="10000">
+                {%load static%}
+                <img src="{% static 'img/imgBar5.png' %}" class="d-block imgBar" alt="Error de carga, por favor actualizar.">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>First slide label</h5>
+                    <p>Some representative placeholder content for the first slide.</p>
+                </div>
+            </div>
+            <div class="carousel-item" data-bs-interval="10000">
+                <img src="{% static 'img/imgBar8.png' %}" class="d-block imgBar" alt="Error de carga, por favor actualizar.">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Second slide label</h5>
+                    <p>Some representative placeholder content for the second slide.</p>
+                </div>
+            </div>
+            <div class="carousel-item" data-bs-interval="10000" >
+                <img src="{% static 'img/imgBar6.jpg' %}" class="d-block imgBar" alt="Error de carga, por favor actualizar.">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Third slide label</h5>
+                    <p>Some representative placeholder content for the third slide.</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon " aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <div class="bgLittleWhite vw-100 p-4 d-flex flex-column">
+        <p class="text-center fs-1">Ropitas más vendidas</p>
+        <div class="d-flex flex-row container justify-content-around pb-4">
+            <div class="d-flex flex-column container justify-content-around">
+                
+                <img class="imgPortfolio" src="{{ productos.0.img.url }}" alt="">
+                <p class="fs-3 text-capitalize text-center">{{productos.0.name}}</p>
+                <p class="fs-3 text-capitalize text-center">S/{{productos.0.price}}</p>
+                <p class="fs-5 text-capitalize text-center">{{productos.0.description}}</p>
+                <form action="" method="post" class="d-flex justify-content-center">
+                    <button class="btn btn-info w-100" type="submit"><i class="fa-solid fa-cart-plus"></i> Agregar al carrito</button>
+                </form>
+            </div>
+            <div class="d-flex flex-column container">
+
+                <img class="imgPortfolio" src="{{ productos.1.img.url }}" alt="">
+                <p class="fs-3 text-capitalize text-center">{{productos.1.name}}</p>
+                <p class="fs-3 text-capitalize text-center">S/{{productos.1.price}}</p>
+                <p class="fs-5 text-capitalize text-center">{{productos.1.description}}</p>
+                <form action="" method="post" class="d-flex justify-content-center">
+                    <button class="btn btn-info w-100" type="submit"><i class="fa-solid fa-cart-plus"></i> Agregar al carrito</button>
+                </form>
+            </div>
+            <div class="d-flex flex-column container">
+
+                <img class="imgPortfolio" src="{{ productos.2.img.url }}" alt="">
+                <p class="fs-3 text-capitalize text-center">{{productos.2.name}}</p>
+                <p class="fs-3 text-capitalize text-center">S/{{productos.2.price}}</p>
+                <p class="fs-5 text-capitalize text-center">{{productos.2.description}}</p>
+                <form action="" method="post" class="d-flex justify-content-center">
+                    <button class="btn btn-info w-100" type="submit"><i class="fa-solid fa-cart-plus"></i> Agregar al carrito</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="bgKit d-flex">
+        <div class="div1">
+            <img class= "imgKit" src="{% static 'img/babykit1.webp' %}" alt="Error de carga, por favor actualizar.">
+        </div>
+        <div class="div2 d-flex flex-column justify-content-center align-items-center container w-50 ">
+            <h1 class="m-2 colorKit">Conoce nuestros kits "Baby Collection"</h1>
+            <h5 class="m-2 w-50 text-center text-secondary">Asegura el futuro de tu bebé y engríelo con ropita de calidad durante sus primeros 3 años, puedes elegir tú misma.</h5>
+            <a class="m-2 colorKit fs-2" href=""> <span>Ir a Baby Collection</span> </a>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+{% endblock %}

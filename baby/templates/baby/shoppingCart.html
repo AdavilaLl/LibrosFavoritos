@@ -1,0 +1,115 @@
+{% extends "baby/index.html" %}
+{% block title%}Carrito de Compras{%endblock%}
+{% block content%}
+<div class="d-flex justify-content-end ">
+    <div class="p-5 vw-100">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <h1 class="fw-bold mb-0 text-black">Carrito de compras</h1>
+            <h6 class="mb-0 text-muted">3 items</h6>
+        </div>
+        {% for product in cart %}
+        <hr class="my-4">
+        <div class="row mb-4 d-flex justify-content-between align-items-center">
+            <div class="col-md-2 col-lg-2 col-xl-2">
+                <img src="{{ product.productos.img.url }}"
+                    class="img-fluid rounded-3" alt="Cotton T-shirt">
+            </div>
+            <div class="col-md-3 col-lg-3 col-xl-3">
+                <h6 class="text-muted text-capitalize">{{product.productos.prodCat.name}}</h6>
+                <h6 class="text-muted text-capitalize">{{product.productos.get_size_display}}</h6>
+                <h6 class="text-muted text-capitalize">{{product.productos.description}}</h6>
+                <h6 class="text-black mb-0 text-capitalize">{{product.productos.name}}</h6>
+                
+            </div>
+            <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                <h6>Cantidad: {{product.cantidad}}</h6>
+                <!--<button class="btn btn-link px-2"
+                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                    <i class="fas fa-minus"></i>
+                </button>
+
+                <input id="form1" min="0" name="quantity" value="1" type="number"
+                    class="form-control form-control-sm" />
+
+                <button class="btn btn-link px-2"
+                    onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                    <i class="fas fa-plus"></i>
+                </button>-->
+            </div>
+            <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                <h6 class="mb-0">S/. {{product.subtotal}}</h6>
+            </div>
+            <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                <a href="#!" class="text-muted"><i class="fas fa-times"></i></a>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <div class="pt-5">
+            <h6 class="mb-0"><a href="#!" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Back to
+                    shop</a></h6>
+        </div>
+    </div>
+
+
+    <div class="col-lg-4 bg-grey vh-100">
+        <div class="p-5">
+            <h3 class="fw-bold mb-4 mt-1 pt-1">Resumen de Compra</h3>
+            {% for product in cart %}
+            <hr class="my-1">
+            <div class="d-flex justify-content-between mb-2 align-items-center">
+                <div>
+                    <p class="text-capitalize my-0">{{product.productos.prodCat.name}}</p>
+                    <p class="text-capitalize my-0">{{product.productos.get_size_display}}</p>
+                    <p class="text-capitalize my-0">{{product.productos.name}}</p>
+                    
+                </div>
+                <p>Cantidad: {{product.cantidad}}</p>
+                <p>S/.{{product.subtotal}}</p>
+            </div>
+            {% endfor %}
+
+            <h5 class="text-capitalize mb-3">Costo de Envio</h5>
+
+            <div class="mb-4 pb-2">
+                <p class="fs-4">Delivery Base - S/.10</p>
+            </div>
+
+            <h5 class="text-uppercase mb-3">Give code</h5>
+
+            <div class="mb-5">
+                <div class="form-outline">
+                    <input type="text" id="form3Examplea2" class="form-control form-control-lg" />
+                    <label class="form-label" for="form3Examplea2">Enter your code</label>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="d-flex flex-column justify-content-between mb-3">
+                <h5 class="text-uppercase">Detalle Precio</h5>
+                <div class="d-flex my-0 justify-content-between">
+                    <p class="fs-5">Descuento:</p><p class="fs-5 ">S/.{{descuento}}</p>
+                </div>
+                <div class="d-flex my-0 justify-content-between">
+                    <p class="fs-5">Op.Gravada:</p><p class="fs-5 ">S/.{{op_gravada}}</p>
+                </div>
+                <div class="d-flex my-0 justify-content-between">
+                    <p class="fs-5">IGV:</p><p class="fs-5 ">S/.{{igv}}</p>
+                </div>
+                <div class="d-flex my-0 justify-content-between">
+                    <h5 class="fs-5">Monto Final:</h5><h5 class="fs-5 ">S/.{{subtotal}}</h5>
+                </div>
+            </div>
+            <form action="{% url 'baby:buy' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Comprar</button>
+            </form>
+            
+
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}

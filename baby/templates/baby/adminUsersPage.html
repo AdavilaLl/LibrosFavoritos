@@ -1,0 +1,75 @@
+{% extends "baby/indexAdmin.html" %}
+{% block title%}BabyShop Admin{%endblock%}
+{% block content%}
+<div class="">
+    <h1 class="text-center">Lista de Usuarios</h1>
+    <div class="d-flex py-4">
+        <a href="{% url 'baby:addUser' %}" class="mx-1 btn btn-success p-2 fs-4">Nuevo Usuario <i class="fa-solid fa-circle-plus"></i></a>
+    </div>
+    <table id="myTable" class="display fs-4 ">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Cumple Bebe</th>
+                <th>Tipo Usuario</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{user.id }}</td>
+                <td>{{user.first_name}} {{user.last_name}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.baby_birthday}}</td>
+                <td>{{user.get_typeUser_display}}</td>
+
+                <td>
+                    <a href="{% url 'baby:editUser' id=user.id %}" class="mx-1 fa fa-pencil-square-o btn btn-warning "></a>
+                    <a href="" class="mx-1 fa fa-trash btn btn-danger" data-bs-toggle="modal"
+                        data-bs-target="#myModal{{user.id}}"></a>
+                </td>
+            </tr>
+            <!-- The Modal -->
+            <div class="modal fade" id="myModal{{user.id}}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title text-danger ">ALERTA</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            Esta a punto de borrar: {{user.first_name}} {{user.last_name}}
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <form action="{% url 'baby:deleteUser' id=user.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger"
+                                    data-bs-dismiss="modal">Eliminar</button>
+                            </form>
+                            <a href="" class="btn btn-light"
+                                data-bs-dismiss="modal">Cancelar</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+{% endblock %}

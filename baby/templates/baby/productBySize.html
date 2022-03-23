@@ -1,0 +1,64 @@
+{% extends "baby/index.html" %}
+{% block title%}Baby Shop :){%endblock%}
+{% block content%}
+
+<div class="bgLittleWhite vw-100 p-4 d-flex flex-column justify-content-center align-items-center">
+    {% if size == '1' %}
+    <h1 class="text-center fs-1 skyblueTxt">0-3 meses</h1>
+    {% elif size == '2' %}
+    <h1 class="text-center fs-1 skyblueTxt">3-6 meses</h1>
+    {% elif size == '3' %}
+    <h1 class="text-center fs-1 skyblueTxt">6-12 meses</h1>
+    {% elif size == '4' %}
+    <h1 class="text-center fs-1 skyblueTxt">12-18 meses</h1>
+    {% elif size == '5' %}
+    <h1 class="text-center fs-1 skyblueTxt">18-24 meses</h1>
+    {% elif size == '6' %}
+    <h1 class="text-center fs-1 skyblueTxt">2 años</h1>
+    {% elif size == '7' %}
+    <h1 class="text-center fs-1 skyblueTxt">3 años</h1>
+    {% endif %}
+    <hr class="w-75 ">
+    <p class="text-center fs-1 skyblueTxt">Por Género</p>
+    <div class="d-flex flex-row container justify-content-around p-3">
+        {% load static %}
+        <div class="d-flex flex-column  justify-content-around">
+            <a href=""><img class="imgPortfolio rounded-circle" src="{% static 'img/babyMale.jpg' %}" alt=""></a>
+            <p class="text-center fs-2 skyblueTxt">Niño <i class="fa-solid fa-mars"></i></p>
+        </div>
+        <div class="d-flex flex-column ">
+            <a href=""><img class="imgPortfolio rounded-circle" src="{% static 'img/babygirl.webp' %}" alt=""></a>
+            <p class="text-center fs-2 skyblueTxt">Niña <i class="fa-solid fa-venus"></i></p>
+        </div>
+    </div>
+    <hr class="w-75 ">
+    <p class="text-center fs-1 skyblueTxt">Por Categoria</p>
+    <div class="d-flex flex-row container justify-content-around p-3 flex-wrap">
+        {% load static %}
+        {% for category in categories %}
+        <div class="d-flex flex-column">
+            {% if category.name == 'Pijamas' %}
+            <a href="{% url 'baby:productBySizeByCat' size=size category='Pijamas' %}"><img class="imgPortfolio rounded-circle" src="{% static 'img/pijamaCategory.jpg' %}" alt="Error de carga, por favor actualizar."></a>
+            <p class="text-center fs-2 skyblueTxt">{{category.name}} </p>
+            {% elif category.name == 'Body'%}
+            <a href="{% url 'baby:productBySizeByCat' size=size category='Body' %}"><img class="imgPortfolio rounded-circle" src="{% static 'img/bodyCategory.jpg' %}" alt="Error de carga, por favor actualizar."></a>
+            <p class="text-center fs-2 skyblueTxt">{{category.name}} </p>
+            {% elif category.name == 'Conjunto'%}
+            <a href="{% url 'baby:productBySizeByCat' size=size category='Conjunto' %}"><img class="imgPortfolio rounded-circle" src="{% static 'img/conjuntoCategory.webp' %}" alt="Error de carga, por favor actualizar."></a>
+            <p class="text-center fs-2 skyblueTxt">{{category.name}} </p>
+            {% elif category.name == 'Babita'%}
+            <a href="{% url 'baby:productBySizeByCat' size=size category='Babita' %}"><img class="imgPortfolio rounded-circle" src="{% static 'img/babitasCategory.webp' %}" alt="Error de carga, por favor actualizar."></a>
+            <p class="text-center fs-2 skyblueTxt">{{category.name}} </p>
+            {% elif category.name == 'Invierno'%}
+            <a href="{% url 'baby:productBySizeByCat' size=size category='Invierno' %}"><img class="imgPortfolio rounded-circle" src="{% static 'img/winterCategory.jpg' %}" alt="Error de carga, por favor actualizar."></a>
+            <p class="text-center fs-2 skyblueTxt">{{category.name}} </p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+
+{% endblock %}

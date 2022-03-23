@@ -1,0 +1,60 @@
+{% extends "baby/index.html" %}
+{% block title%}Baby Shop{%endblock%}
+{% block content%}
+
+<div class="bgLittleWhite vw-100 vh-100">
+    <div class="bgLittleWhite vw-100 p-4 d-flex flex-column justify-content-center align-items-center">
+        {% if size == '1' %}
+        <h1 class="text-center fs-1 skyblueTxt">Talla: 0-3 meses  | Categoria: {{category}}</h1>
+        {% elif size == '2' %}
+        <h1 class="text-center fs-1 skyblueTxt">Talla: 3-6 meses | Categoria: {{category}}</h1>
+        {% elif size == '3' %}
+        <h1 class="text-center fs-1 skyblueTxt">Talla: 6-12 meses | Categoria: {{category}}</h1>
+        {% elif size == '4' %}
+        <h1 class="text-center fs-1 skyblueTxt">Talla: 12-18 meses | Categoria: {{category}}</h1>
+        {% elif size == '5' %}
+        <h1 class="text-center fs-1 skyblueTxt">Talla: 18-24 meses | Categoria: {{category}}</h1>
+        {% elif size == '6' %}
+        <h1 class="text-center fs-1 skyblueTxt">Talla: 2 años | Categoria: {{category}}</h1>
+        {% elif size == '7' %}
+        <h1 class="text-center fs-1 skyblueTxt">Talla: 3 años | Categoria: {{category}}</h1>
+        {% endif %}
+        
+        <hr class="w-75 ">
+    
+        <div class="d-flex flex-row justify-content-around pb-4">
+            {% for product in products %}
+            <div class="d-flex flex-column container justify-content-around">
+
+                {% if product.img %}
+                <img class="imgPortfolio" src="{{ product.img.url }}" alt="Error de carga, por favor actualizar.">
+                {% else %}
+                <img class="imgPortfolio" src="" alt="Error de carga, por favor actualizar.">
+                {% endif %}
+
+                <p class="fs-3 text-capitalize text-center">{{product.name}}</p>
+                <p class="fs-3 text-capitalize text-center">S/{{product.price}}</p>
+                <p class="fs-5 text-capitalize text-center">{{product.description}}</p>
+                <form action="{% url 'baby:addToShoppingCart' id=product.id %}" method="post" class="d-flex justify-content-center">
+                    {% csrf_token %}
+                    <select class="form-select littleSelect" aria-label="Default select example" name="cantidad">
+                        <option selected value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <button class="btn btn-info w-100" type="submit"><i class="fa-solid fa-cart-plus"></i> Agregar al
+                        carrito</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,226 @@
+{% extends "baby/index.html" %}
+{% block title%}Registrarse{%endblock%}
+{% block navbar %}
+{% endblock %}
+{% block content%}
+<div class="d-flex doubleScreen">
+    <div class="w-50 vh-100">
+        <div class="d-flex justify-content-center h-100">
+            <div class="card2">
+                <div class="card-header">
+                    <h3>Registrarse</h3>
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'baby:register'%}" method="post">
+                        {% csrf_token %}
+                        {{ userForm.non_field_errors }}
+
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                            </div>
+                            {{ userForm.first_name }}
+                            {% if field.errors %}
+
+                            <div class="alert alert-danger mt-2" role="alert">
+                                {% for error in field.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+
+                            {% endif %}
+
+                            {% if field.help_text %}
+                            <p class="help">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa-solid fa-user"></i></i></span>
+                            </div>
+                            {{ userForm.last_name}}
+                            {% if field.errors %}
+
+                            <div class="alert alert-danger mt-2" role="alert">
+                                {% for error in field.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+
+                            {% endif %}
+
+                            {% if field.help_text %}
+                            <p class="help">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa-solid fa-at"></i></span>
+                            </div>
+                            {{ userForm.email}}
+                            {% if field.errors %}
+
+                            <div class="alert alert-danger mt-2" role="alert">
+                                {% for error in field.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+
+                            {% endif %}
+
+                            {% if field.help_text %}
+                            <p class="help">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa-solid fa-calendar-days"></i></i></span>
+                            </div>
+                            {{ userForm.baby_birthday}}
+                            {% if field.errors %}
+
+                            <div class="alert alert-danger mt-2" role="alert">
+                                {% for error in field.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+
+                            {% endif %}
+
+                            {% if field.help_text %}
+                            <p class="help">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                            </div>
+                            {{ userForm.password}}
+                            {% if field.errors %}
+
+                            <div class="alert alert-danger mt-2" role="alert">
+                                {% for error in field.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+
+                            {% endif %}
+
+                            {% if field.help_text %}
+                            <p class="help">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                            </div>
+                            {{ userForm.confirmar_password}}
+                            {% if field.errors %}
+
+                            <div class="alert alert-danger mt-2" role="alert">
+                                {% for error in field.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+
+                            {% endif %}
+
+                            {% if field.help_text %}
+                            <p class="help">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!--{% for field in formLogin %}
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            </div>
+                            {{ field }}
+                            {% if field.errors %}
+    
+                            <div class="alert alert-danger mt-2" role="alert">
+                                {% for error in field.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+    
+                            {% endif %}
+    
+                            {% if field.help_text %}
+                            <p class="help">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}-->
+                        <div class="d-flex justify-content-center">
+                            <div class="form-group m-2">
+                                <a href="{% url 'baby:login' %}" class="btn float-right login_btn" type="submit">Atrás</a>
+                            </div>
+                            <div class="form-group m-2">
+                                <button class="btn float-right login_btn" type="submit">Registrarse</button>
+                            </div>
+                        </div>
+                </div>
+                <div class="card-footer">
+
+                </div>
+                </form>
+            </div>
+
+        </div>
+        <!--<h1 class="text-center">Agregar Usuario</h1>
+        <div class="d-flex justify-content-center col-12">
+        
+            <form class="d-flex flex-column w-50 " action="" method="post">
+                {% csrf_token %}
+                {{ userForm.non_field_errors }}
+        
+                {% for field in userForm %}
+                <div class="mb-3 row ">
+                    <label for="{{ field.id_for_label }}" class="col-sm-3 col-form-label">{{ field.label }}</label>
+                    <div class="col-sm-9">
+                        {{ field }}
+                    </div>
+        
+                    {% if field.errors %}
+        
+                    <div class="alert alert-danger mt-2" role="alert">
+                        {% for error in field.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+        
+                    {% endif %}
+        
+                    {% if field.help_text %}
+                    <p class="help">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <div class="d-flex flex-column">
+                    <div class="container fs-3 d-flex justify-content-center">
+                        <div class="d-flex ">
+                            <a href="{% url 'baby:login'%}" class="btn btn-light m-1">Atrás</a>
+                        </div>
+                        <div class="d-flex ">
+                            <form action="" method="post">
+                                <button class="btn btn-warning m-1" type="submit">Registrar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            {% load static %}
+    
+        </div>-->
+    </div>
+</div>
+
+
+
+
+{% endblock %}
